@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 function Login()
 {
@@ -12,6 +12,8 @@ function Login()
         email:"",
         password:""
     }); 
+  
+   const [count,setCount] = useState<any>(0)
 
    function handleInputChange(e: { target: { name:any, value:any } }) 
    {
@@ -26,8 +28,13 @@ function Login()
    function sendValue(e:any) 
    { 
      e.preventDefault();
-     alert(formData.email + ' ' + formData.password); 
-   }
+     alert(formData.email + ' ' + formData.password + '' + document.title); 
+   } 
+
+   useEffect(() => {
+     document.title = 'Vite + React + TS ' + count 
+     console.log(count)
+   }, [count])
 
     
    return(
@@ -44,7 +51,8 @@ function Login()
         </div> 
         <button className="btn btn-danger">Submit</button>
       </div>
-    </form>
+    </form> 
+    <button className="btn btn-warning mt-5" onClick={() => {setCount(count + 1)}} >SendEffect</button>
     </>
    )
 } 
