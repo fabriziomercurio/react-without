@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 function Login()
 {
@@ -13,7 +13,8 @@ function Login()
         password:""
     }); 
   
-   const [count,setCount] = useState<any>(0)
+   const [message,setMessage] = useState<string>(); 
+   const [alert,setAlert] = useState<boolean>(false);
 
    function handleInputChange(e: { target: { name:any, value:any } }) 
    {
@@ -25,20 +26,43 @@ function Login()
       })
    } 
 
-   function sendValue(e:any) 
+   const sendValue = (e:any) =>  
    { 
      e.preventDefault();
-     alert(formData.email + ' ' + formData.password + '' + document.title); 
+     fetch('http://localhost:8080/api/login', {
+      method: 'POST',
+     
+      body: JSON.stringify({
+        email:formData.email, 
+        password:formData.password
+      })
+     })
+     .then((response) => response.json()) 
+     .then(result => {
+       if (result.error) {  
+             setMessage(result.error); 
+             setAlert(true);
+             console.log(alert)  
+       } 
+       if (result.message) {
+             console.log(result)  
+       }
+      }     
+    )
    } 
-
-   useEffect(() => {
-     document.title = 'Vite + React + TS ' + count 
-     console.log(count)
-   }, [count])
-
     
    return(
     <>
+    {
+      alert &&(
+          <div className="alert alert-danger alert-dismissible fade show" role="alert">
+          {message}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => {setAlert(false)}} />
+          </div>
+      )
+    }
+    
+
     <form onSubmit={sendValue}>
         <div style={{maxWidth: "50%", margin: "0 auto"}}>
         <div className="mb-3">
@@ -52,7 +76,6 @@ function Login()
         <button className="btn btn-danger">Submit</button>
       </div>
     </form> 
-    <button className="btn btn-warning mt-5" onClick={() => {setCount(count + 1)}} >SendEffect</button>
     </>
    )
 } 

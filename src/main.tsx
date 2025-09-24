@@ -5,10 +5,14 @@ import App from './App.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import Product from './components/Product.tsx'
 import NotFoundPage from './components/NotFoundPage.tsx'
+import Register from './components/Register.tsx'
+import Login from './components/Login.tsx'
 
 const router = createBrowserRouter([ 
   {path:'/', element:<App />},
+  {path:'/login', element:<Login />},
   {path:'/products', element:<Product />},
+  {path:'/register', element:<Register />},
   {path:'*', element:<NotFoundPage />}
 ])
 

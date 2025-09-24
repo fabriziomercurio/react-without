@@ -13,7 +13,6 @@ function Product()
   const [data,setData] = useState<TypePost[]>([])
 
   useEffect(() => {
-    //fetch("https://jsonplaceholder.typicode.com/posts") 
     fetch("http://localhost:8080/api/products")
     .then((response) => response.json()) 
     .then((json) => { setData(json); console.log(json)})
@@ -39,15 +38,3 @@ function Product()
 export default Product 
 
 
-{/* <>
-      <Navbar />
-      <div className="container mt-5">
-        <h3>Lista dei post</h3>
-        {data.map((post) => (
-          <div key={post.id} className="mb-3">
-            <h5>{post.title}</h5>
-            <p>{post.body}</p>
-          </div>
-        ))}
-      </div>
-    </> */}
