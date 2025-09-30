@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router";
 
 function Login()
 {
@@ -16,6 +17,19 @@ function Login()
    const [message,setMessage] = useState<string>(); 
    const [alert,setAlert] = useState<boolean>(false);
 
+   const [token,setToken] = useState<string>( localStorage.getItem('token') ||  ''); 
+   const [userName,setUSerName] = useState<string>( localStorage.getItem('userName') ||  '');
+
+   const navigate = useNavigate();
+
+   const saveToken = (token:string) => {
+    localStorage.setItem('token', JSON.stringify(token))
+   } 
+
+   const saveUserName = (username:string) => {
+    localStorage.setItem('userName', JSON.stringify(username))
+   }
+
    function handleInputChange(e: { target: { name:any, value:any } }) 
    {
       const {name,value} = e.target; 
@@ -31,7 +45,10 @@ function Login()
      e.preventDefault();
      fetch('http://localhost:8080/api/login', {
       method: 'POST',
-     
+      headers: {
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer J9joxLCJ1c2VyX25hbWUiOiJGYWJyaXppbyIsImV4cCI6MTc1OTIyNjAwNX0.THTeuOVR0xeav-SFUTmu3TmWGRZR1VP12y7P8TzWAq-EKLPnqGdNbBjY-_GMLw6HmrQmtRrJLxeFCQlrH53-d477eW3Li3Xaqog7Sd4owGOn-WMLxUCYAMVHIab4SBD2BYRD-HPI0mMtfiWVsr6hAg4f5uZWMANi17I8fBDtLiy5pnoK2fIlkUJWrznR5MFZKMorwRRfsw68MUaa8BID9aR0UJIkWEreLXfMUnFfaxlqTfJXTKHt_qUq7DAbyxjgSUMr_fkrpes7wF6ajI-vEB41RqU7E46omb0ZhkvwU80RtA3A-awmIpee-vNwsdDdcsRGoQ9Vr1wg2IQ`
+      },
       body: JSON.stringify({
         email:formData.email, 
         password:formData.password
@@ -39,20 +56,25 @@ function Login()
      })
      .then((response) => response.json()) 
      .then(result => {
-       if (result.error) {  
-             setMessage(result.error); 
+      if (result.error == false) {  
+             setMessage(result.messageError); 
              setAlert(true);
-             console.log(alert)  
+             console.log(alert);   
        } 
-       if (result.message) {
-             console.log(result)  
+       if (result.message) {          
+            console.log(result)  
+            setToken(result.token)
+            saveToken(result.token)
+            setUSerName(result.data.name)
+            saveUserName(result.data.name)
+            navigate('/dashboard')
        }
       }     
     )
    } 
     
    return(
-    <>
+    <> 
     {
       alert &&(
           <div className="alert alert-danger alert-dismissible fade show" role="alert">

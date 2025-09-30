@@ -7,12 +7,14 @@ import Product from './components/Product.tsx'
 import NotFoundPage from './components/NotFoundPage.tsx'
 import Register from './components/Register.tsx'
 import Login from './components/Login.tsx'
+import Dashboard from './components/Dashboard.tsx'
 
 const router = createBrowserRouter([ 
   {path:'/', element:<App />},
   {path:'/login', element:<Login />},
   {path:'/products', element:<Product />},
   {path:'/register', element:<Register />},
+  {path:'/dashboard', element:<Dashboard />},
   {path:'*', element:<NotFoundPage />}
 ])
 
