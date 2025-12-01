@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "./Navbar"
 import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table";
+import { Navigate } from "react-router";
 
 function Product() {
 
@@ -8,12 +9,29 @@ function Product() {
   const [pagination, setPagination] = useState({
   pageIndex: 0,
   pageSize: 15, // numero di record per pagina
-  });
+  }); 
+
+  const [selectedId, setSelectedId] = useState(null);
+
+  const token = localStorage.getItem('token');
+  const [message,setMessage] = useState<string>(); 
+  const [success,setSuccess] = useState<boolean>(false);
+  const products = useMemo(() => dataset, [dataset]); 
+
+  const loadProducts = () => {
+  fetch("http://localhost:8080/api/products")
+    .then(res => res.json())
+    .then(data => setData(data));
+  };
+  
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
 
   useEffect(() => {
     fetch("http://localhost:8080/api/products")
     .then((response) => response.json()) 
-    .then((json) => { setData(json); console.log(json)})
+    .then((json) => { setData(json);})
   },[])
 
   interface Product {
@@ -24,9 +42,30 @@ function Product() {
     available:number; 
     brand:string; 
     code:string;
+  } 
+
+  const deleteRecord = (id: any) => {
+        fetch(`http://localhost:8080/api/products/${id}`, {
+         method: 'DELETE',
+         headers: {
+             'Content-Type': 'application/json'
+         }, 
+      }) 
+      .then((response) => {return response.json()})
+      .then(result => { 
+            if (result.success) {
+              setMessage(result.message); 
+              setSuccess(true); 
+            }
+         }) 
+      .catch(error => {
+        console.error('Errore nella richiesta:', error.message);
+        });
   }
 
-  const products = useMemo(() => dataset, [dataset]);
+  const handleDelete = (id: any) => {
+    setSelectedId(id);
+  }  
 
   const columns: ColumnDef<Product>[] = [ 
     {
@@ -72,7 +111,7 @@ function Product() {
     header: 'Actions',
     cell: (row => (
       <div>
-         <button className="btn btn-danger m-1" onClick={() => alert(row.row.original.id)}>delete</button>
+         <button className="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDelete(row.row.original.id)}>delete</button>
          <button className="btn btn-warning m-1">edit</button>
       </div>
     ))
@@ -85,14 +124,97 @@ function Product() {
     state: { pagination },
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(), 
-    getPaginationRowModel:getPaginationRowModel()
-  })
+    getPaginationRowModel:getPaginationRowModel(), 
+    autoResetPageIndex: false
+  }) 
 
   return (
-    <>
-      <Navbar />
-      <div className="container mt-5">
-        <table className="table table-striped">
+  <>
+  <Navbar />
+    
+  <div className="container mt-5">
+      <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex={-1}
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+                Are you sure record with id <strong>{selectedId}</strong>?
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal" 
+                 onClick={() => {
+                setSuccess(false);
+                loadProducts();
+              }}
+              >
+                Close
+              </button>
+              <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => deleteRecord(selectedId)}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div className="container mt-5"> 
+
+      {success && (
+        <>
+           <div className="modal fade show d-block" tabIndex={-1} role="dialog">
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <button
+              type="button"
+              className="btn-close"
+              aria-label="Close"
+              onClick={() => {
+                setSuccess(false);
+                loadProducts();
+              }}
+            />
+          </div>
+          <div className="modal-body">
+            <p>{message}</p>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => {
+                setSuccess(false);
+                loadProducts();
+              }}
+            >
+              Chiudi
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="modal-backdrop fade show"></div>
+        </>
+      )}
+
+      <table className="table table-striped">
           <thead>
             {
               table.getHeaderGroups().map(headerGroup =>
@@ -134,10 +256,17 @@ function Product() {
           <button className="border" disabled={!table.getCanNextPage()} onClick={() => table.nextPage()}>Next Page</button>
           <button className="border" onClick={() => table.setPageIndex(table.getPageCount() - 1)}>Last Page</button>
         </div> 
-      </div>
-    </>
-  )
+
+    </div>
+
+         
+   
+
+
+  </>
+);
 }
+
 export default Product
 
 
