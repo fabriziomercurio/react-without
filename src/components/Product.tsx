@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "./Navbar"
 import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table";
-import { Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 function Product() {
+
+  let navigate = useNavigate(); 
 
   const [dataset,setData] = useState<Product[]>([]); 
   const [pagination, setPagination] = useState({
@@ -48,7 +50,8 @@ function Product() {
         fetch(`http://localhost:8080/api/products/${id}`, {
          method: 'DELETE',
          headers: {
-             'Content-Type': 'application/json'
+             'Content-Type': 'application/json', 
+             'X-CSRFToken': localStorage.getItem('csrfToken') || ''
          }, 
       }) 
       .then((response) => {return response.json()})
@@ -66,6 +69,10 @@ function Product() {
   const handleDelete = (id: any) => {
     setSelectedId(id);
   }  
+
+  const handleEdit = (id: any) => {
+     navigate('/products/' + id)
+  }
 
   const columns: ColumnDef<Product>[] = [ 
     {
@@ -112,7 +119,7 @@ function Product() {
     cell: (row => (
       <div>
          <button className="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDelete(row.row.original.id)}>delete</button>
-         <button className="btn btn-warning m-1">edit</button>
+         <button className="btn btn-warning m-1" onClick={() => handleEdit(row.row.original.id)} >edit</button>
       </div>
     ))
     }

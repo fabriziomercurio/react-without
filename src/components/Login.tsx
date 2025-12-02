@@ -18,13 +18,19 @@ function Login()
    const [alert,setAlert] = useState<boolean>(false);
 
    const [token,setToken] = useState<string>( localStorage.getItem('token') ||  ''); 
-   const [userName,setUSerName] = useState<string>( localStorage.getItem('userName') ||  '');
+   const [userName,setUSerName] = useState<string>( localStorage.getItem('userName') ||  ''); 
+
+   const [csrfToken,setCsrfToken] = useState<string>( localStorage.getItem('csrfToken') ||  ''); 
 
    const navigate = useNavigate();
 
    const saveToken = (token:string) => {
     localStorage.setItem('token', JSON.stringify(token))
    } 
+
+   const saveCsrfToken = (csrfToken:string) => {
+    localStorage.setItem('csrfToken', JSON.stringify(csrfToken))
+   }
 
    const saveUserName = (username:string) => {
     localStorage.setItem('userName', JSON.stringify(username))
@@ -47,7 +53,7 @@ function Login()
       method: 'POST',
       headers: {
           'Content-Type': 'application/json', 
-          'Authorization': `Bearer J9joxLCJ1c2VyX25hbWUiOiJGYWJyaXppbyIsImV4cCI6MTc1OTIyNjAwNX0.THTeuOVR0xeav-SFUTmu3TmWGRZR1VP12y7P8TzWAq-EKLPnqGdNbBjY-_GMLw6HmrQmtRrJLxeFCQlrH53-d477eW3Li3Xaqog7Sd4owGOn-WMLxUCYAMVHIab4SBD2BYRD-HPI0mMtfiWVsr6hAg4f5uZWMANi17I8fBDtLiy5pnoK2fIlkUJWrznR5MFZKMorwRRfsw68MUaa8BID9aR0UJIkWEreLXfMUnFfaxlqTfJXTKHt_qUq7DAbyxjgSUMr_fkrpes7wF6ajI-vEB41RqU7E46omb0ZhkvwU80RtA3A-awmIpee-vNwsdDdcsRGoQ9Vr1wg2IQ`
+          'Authorization': `Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VyX25hbWUiOiJGYWJyaXppbyIsImV4cCI6MTc2NDY2Nzc2N30.F69MLEJGo0X8Nly_i5NgLyqYSI74uPUrMgpt71MPfP4eTxT9KR56JdoCnZe2xqw6qrqWrN2PzLO3jq_B4mZ7UulMzq16iK_9Ezvkl72-ql2sglRE9YRPXr7MvO0JkwatPJCuS4x6R7Lc-cxKLEeyNZ6gUBgSCS56tMmUb93Q0XwooYBRJ_BRSNWVDgsH3npnHi-wrm1xEd4LYaWeGTtWf1vnVN1UCV5YdlT6EzmfzZTybNs3dZgVTdA-YXWs0a-u4bS2mvcPr80-koLhFfuXoFzvoBRMzu3QLkgyoU93ljXQwOFSlwCFj06l2aZp0BAzPMIV008LnJWZVgIkNZFdCQ`
       },
       body: JSON.stringify({
         email:formData.email, 
@@ -66,7 +72,9 @@ function Login()
             setToken(result.token)
             saveToken(result.token)
             setUSerName(result.data.name)
-            saveUserName(result.data.name)
+            saveUserName(result.data.name) 
+            setCsrfToken(result.csrf)
+            saveCsrfToken(result.csrf)
             navigate('/dashboard')
        }
       }     
