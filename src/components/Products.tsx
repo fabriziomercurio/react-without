@@ -3,7 +3,7 @@ import Navbar from "./Navbar"
 import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table";
 import { Navigate, useNavigate } from "react-router";
 
-function Product() {
+function Products() {
 
   let navigate = useNavigate(); 
 
@@ -19,6 +19,10 @@ function Product() {
   const [message,setMessage] = useState<string>(); 
   const [success,setSuccess] = useState<boolean>(false);
   const products = useMemo(() => dataset, [dataset]); 
+
+  const newProduct = () => {
+    navigate('/product')
+  }
 
   const loadProducts = () => {
   fetch("http://localhost:8080/api/products")
@@ -139,7 +143,10 @@ function Product() {
   <>
   <Navbar />
     
-  <div className="container mt-5">
+  <div className="container mt-5"> 
+    <div className="row col-md-2">
+      <button className="btn btn-success" onClick={newProduct}>New Product</button>
+    </div>
       <div
         className="modal fade"
         id="exampleModal"
@@ -265,15 +272,10 @@ function Product() {
         </div> 
 
     </div>
-
-         
-   
-
-
   </>
 );
 }
 
-export default Product
+export default Products
 
 
