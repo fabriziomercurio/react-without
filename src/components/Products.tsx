@@ -96,9 +96,9 @@ function Products() {
     },
     {
     accessorKey: 'description',
-    header: 'description',
+    header: 'description', 
     cell: info => {
-      const value = info.getValue() as string;
+      const value = (info.getValue() as string) ?? '';
       return value.length > 25 ? value.substring(0, 25) + "..." : value;
       },
      },

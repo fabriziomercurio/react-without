@@ -14,6 +14,7 @@ function NewProduct()
         price: number;
         category: string;
         description: string;
+        multi_name: string;
         available: number;
         brand: string;
         code: string;
@@ -59,15 +60,18 @@ function NewProduct()
         },
         body: JSON.stringify({
             name: formData.data?.name,
-            description: formData.data?.description
+            description: formData.data?.description, 
+            multi_name: formData.data?.multi_name
         })
         })
         .then(response => {return response.json();} )
         .then(result => {             
-             if (result.success) {
+             if (result.success) { 
+               console.log(result.success)
                setMessage(result.message); 
                setSuccess(true); 
-             }else{
+             }else{ 
+                console.log(result)
                 setValidation(result); 
              } 
          })
@@ -85,7 +89,7 @@ function NewProduct()
             <div className="container">
             <div className="alert alert-success alert-dismissible fade show" role="alert">
                 {message}
-                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => setSuccess(false)} />
             </div>
             </div>
             )} 
@@ -103,6 +107,13 @@ function NewProduct()
                 {validation.description && (
                     <div className="invalid-feedback mb-3">
                     {validation.description}
+                    </div>
+                 )} 
+                <label>Name Image</label>
+                <textarea className={`form-control ${validation.multi_name ? 'is-invalid' : ''} mb-3`} name="multi_name" value={formData.data?.multi_name} onChange={handleInputChange}></textarea>
+                {validation.multi_name && (
+                    <div className="invalid-feedback mb-3">
+                    {validation.multi_name}
                     </div>
                  )}
                 <button className="btn btn-outline-success">Send</button>
