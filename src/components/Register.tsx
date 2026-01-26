@@ -11,10 +11,12 @@ function Register()
        password:string, 
        city:string,
        age:string
-    }
+    } 
+
     const [formData, setFormData] = useState<Partial<Register>>({});
     const [message,setMessage] = useState<string>(); 
     const [success,setSuccess] = useState<boolean>(false);
+    const [validation, setValidation] = useState<Partial<Register>>({})
 
     function handleInputChange(e:any)
     {
@@ -47,26 +49,28 @@ function Register()
         })
         .then(response => { return response.json();})
         .then(result => { 
-            if (result.success) {
+            if (result.success) { 
                 setMessage(result.message); 
                 setSuccess(true); 
+                setValidation({})
+            }else{
+                setValidation(result)
+                console.log(validation)
             }
          })
-        .catch(error => {
-        console.error('Errore nella richiesta:', error.message);
-        });
-     
+        .catch(error => {         
+           console.error('Errore nella richiesta:', error.message);
+        });     
     }
     return(
         <>
         <Navbar />
         <h3 className="mt-3">Register</h3> 
-        
         {success &&(
             <div className="container">
             <div className="alert alert-success alert-dismissible fade show" role="alert">
                 {message}
-                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => setSuccess(false)} />
             </div>
             </div>
         )}       
@@ -75,19 +79,31 @@ function Register()
          <form onSubmit={submitForm}>
             <div className="mb-3">
                 <label htmlFor="exampleFormControlInput1" className="form-label">FirstName</label>
-                <input type="text" name="firstname" className="form-control" id="exampleFormControlInput1" onChange={handleInputChange} />
+                <input type="text" name="firstname" className={`form-control ${validation.firstname ? 'is-invalid' : ''} mb-3`} id="exampleFormControlInput1" onChange={handleInputChange} />
+                <div className="invalid-feedback mb-3">
+                    {validation.firstname}
+                </div>
             </div>
             <div className="mb-3">
                 <label htmlFor="exampleFormControlInput1" className="form-label">LastName</label>
-                <input type="text" name="lastname" className="form-control" id="exampleFormControlInput1" onChange={handleInputChange} />
+                <input type="text" name="lastname" className={`form-control ${validation.lastname ? 'is-invalid' : ''} mb-3`} id="exampleFormControlInput1" onChange={handleInputChange} />
+                <div className="invalid-feedback mb-3">
+                    {validation.lastname}
+                </div>
             </div>
             <div className="mb-3">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
-                <input type="email" name="email" className="form-control" id="exampleFormControlInput1" onChange={handleInputChange} />
+                <input type="email" name="email" className={`form-control ${validation.email ? 'is-invalid' : ''} mb-3`} id="exampleFormControlInput1" onChange={handleInputChange} />
+                <div className="invalid-feedback mb-3">
+                    {validation.email}
+                </div>
             </div>
             <div className="mb-3">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Password</label>
-                <input type="password" name="password" className="form-control" id="exampleFormControlInput1" onChange={handleInputChange} />
+                <input type="password" name="password" className={`form-control ${validation.password ? 'is-invalid' : ''} mb-3`} id="exampleFormControlInput1" onChange={handleInputChange} />
+                <div className="invalid-feedback mb-3">
+                    {validation.password}
+                </div>
             </div> 
             <div className="mb-3">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Age</label>

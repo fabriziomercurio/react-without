@@ -19,6 +19,7 @@ function NewProduct()
         brand: string;
         code: string;
         weight: number;
+        image:Blob
     } | null;
     details:{
        status:boolean; 
@@ -41,28 +42,36 @@ function NewProduct()
    })
 
    const handleInputChange = (e:any) => {
-      const {name, value} = e.target;      
+      const {name, value, type, files} = e.target;      
       setFormData({
         ...formData,
         data: { 
             ...formData.data,
-            [name]: value,
+            [name]: type === "file" ? files[0] : value
         }
     }) 
     }
 
     const handleSubmit = (e:any) => { 
         e.preventDefault(); 
+
+        const test = new FormData(); 
+        test.append('name',formData.data?.name ?? '');
+        test.append('description',formData.data?.description ?? ''); 
+        test.append('multi_name',formData.data?.multi_name ?? '');
+        test.append('image',formData.data?.image ?? '');
+
         fetch('http://localhost:8080/api/product', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: formData.data?.name,
-            description: formData.data?.description, 
-            multi_name: formData.data?.multi_name
-        })
+        // headers: {
+        //     'Content-Type': 'multipart/form-data'
+        // },
+        // body: JSON.stringify({
+        //     name: formData.data?.name,
+        //     description: formData.data?.description, 
+        //     multi_name: formData.data?.multi_name
+        // }) 
+        body:test 
         })
         .then(response => {return response.json();} )
         .then(result => {             
@@ -76,7 +85,7 @@ function NewProduct()
              } 
          })
         .catch(error => { 
-           console.error('Errore nella richiesta:', error.message);
+            console.error('Errore nella richiesta:', error.message);
         });
     } 
 
@@ -94,7 +103,7 @@ function NewProduct()
             </div>
             )} 
 
-            <form onSubmit={handleSubmit}> 
+            <form onSubmit={handleSubmit} encType="multipart/form-data"> 
                 <label>Nome</label> 
                 <input className={`form-control ${validation.name ? 'is-invalid' : ''} mb-3`} type="text" name="name" value={formData.data?.name} onChange={handleInputChange} />
                  {validation.name && (
@@ -115,7 +124,14 @@ function NewProduct()
                     <div className="invalid-feedback mb-3">
                     {validation.multi_name}
                     </div>
-                 )}
+                 )} 
+
+                 <div>
+                <label>Immagine:</label>
+                <input type="file" name="image" onChange={handleInputChange} />
+
+                
+            </div>
                 <button className="btn btn-outline-success">Send</button>
             </form>
          </div>
