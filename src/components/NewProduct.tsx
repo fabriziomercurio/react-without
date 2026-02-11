@@ -13,7 +13,7 @@ function NewProduct()
         name: string;
         price: number;
         category: string;
-        description: string;
+        descr: string;
         multi_name: string;
         available: number;
         brand: string;
@@ -55,23 +55,15 @@ function NewProduct()
     const handleSubmit = (e:any) => { 
         e.preventDefault(); 
 
-        const test = new FormData(); 
-        test.append('name',formData.data?.name ?? '');
-        test.append('description',formData.data?.description ?? ''); 
-        test.append('multi_name',formData.data?.multi_name ?? '');
-        test.append('image',formData.data?.image ?? '');
+        const form = new FormData(); 
+        form.append('name',formData.data?.name ?? '');
+        form.append('descr',formData.data?.descr ?? ''); 
+        form.append('multi_name',formData.data?.multi_name ?? '');
+        form.append('image',formData.data?.image ?? '');
 
         fetch('http://localhost:8080/api/product', {
         method: 'POST',
-        // headers: {
-        //     'Content-Type': 'multipart/form-data'
-        // },
-        // body: JSON.stringify({
-        //     name: formData.data?.name,
-        //     description: formData.data?.description, 
-        //     multi_name: formData.data?.multi_name
-        // }) 
-        body:test 
+        body:form 
         })
         .then(response => {return response.json();} )
         .then(result => {             
@@ -112,10 +104,10 @@ function NewProduct()
                     </div>
                  )}
                 <label>Description</label>
-                <textarea className={`form-control ${validation.description ? 'is-invalid' : ''} mb-3`} name="description" value={formData.data?.description} onChange={handleInputChange}></textarea>
-                {validation.description && (
+                <textarea className={`form-control ${validation.descr ? 'is-invalid' : ''} mb-3`} name="descr" value={formData.data?.descr} onChange={handleInputChange}></textarea>
+                {validation.descr && (
                     <div className="invalid-feedback mb-3">
-                    {validation.description}
+                    {validation.descr}
                     </div>
                  )} 
                 <label>Name Image</label>
