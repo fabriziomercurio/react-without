@@ -1,5 +1,5 @@
 import { useState } from "react"
-import Navbar from "./Navbar"
+import Navbar from "../Navbar"
 
 function NewProduct() 
 {
@@ -110,18 +110,9 @@ function NewProduct()
                     {validation.descr}
                     </div>
                  )} 
-                <label>Name Image</label>
-                <textarea className={`form-control ${validation.multi_name ? 'is-invalid' : ''} mb-3`} name="multi_name" value={formData.data?.multi_name} onChange={handleInputChange}></textarea>
-                {validation.multi_name && (
-                    <div className="invalid-feedback mb-3">
-                    {validation.multi_name}
-                    </div>
-                 )} 
-
                  <div>
                 <label>Immagine:</label>
                 <input type="file" name="image" onChange={handleInputChange} />
-
                 
             </div>
                 <button className="btn btn-outline-success">Send</button>

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
-import Navbar from "./Navbar"
+import Navbar from "../Navbar"
 import { useParams } from "react-router";
 
 function ProductEdit() { 
+
+   const BASE_URL = import.meta.env.VITE_BASE_URL;  
 
    interface ProductResponse {
     success: boolean;
@@ -18,7 +20,15 @@ function ProductEdit() {
         available?: number;
         brand?: string;
         code?: string;
-        weight?: number;
+        weight?: number; 
+        multimedia?:{
+            filename?:string 
+            paths:{
+                max?:string, 
+                medium?:string,
+                min?:string
+            }
+        }
     } | null;
     statusCode: number;
     token: string;
@@ -40,6 +50,7 @@ function ProductEdit() {
     fetch(`http://localhost:8080/api/product/${numericId}`)
         .then((response) => response.json())
         .then((data) => {
+            console.log(data)
         setProduct(data);
         setFormData(data); // 👈 inizializza subito il form con i dati della tabella
         })
@@ -73,8 +84,9 @@ function ProductEdit() {
             description: formData?.data?.description,
             code: formData?.data?.code
           })
-        }).then((response) => {return response.json()})
-        .then((data) => console.log(data))
+        })
+        .then(response => { alert(); return response.json(); // <-- THIS WAS MISSING 
+        }); 
     })
 
    return(
@@ -92,7 +104,14 @@ function ProductEdit() {
          <form onSubmit={submitForm}>
          <input className="mt-3 form-control" type="text" id="description" name="description" onChange={handleInputChange} value={formData?.data?.description} />
          <input className="mt-3 form-control" type="text" id="code" name="code" onChange={handleInputChange} value={formData?.data?.code} />
-         <button className="btn btn-outline-warning mt-4">Update</button>
+         <label>Immagine:</label> 
+         <div>
+            <img src={`${BASE_URL}${formData?.data?.multimedia?.paths?.min}`} className="mt-5" alt="Product image" />
+         </div>
+         <input type="file" className="mt-5" name="image" onChange={handleInputChange} />
+         <br />
+
+         <button className="btn btn-outline-warning mt-4 mb-5">Update</button>
          </form>
         </>
     )}

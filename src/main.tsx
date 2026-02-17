@@ -8,8 +8,8 @@ import NotFoundPage from './components/NotFoundPage.tsx'
 import Register from './components/Register.tsx'
 import Login from './components/Login.tsx'
 import Dashboard from './components/Dashboard.tsx'
-import ProductEdit from './components/ProductEdit.tsx'
-import NewProduct from './components/NewProduct.tsx'
+import ProductEdit from './components/Products/ProductEdit.tsx'
+import NewProduct from './components/Products/NewProduct.tsx'
 
 const router = createBrowserRouter([ 
   {path:'/', element:<App />},
