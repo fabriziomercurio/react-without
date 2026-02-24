@@ -81,7 +81,7 @@ function ProductEdit() {
                 'Content-Type':'application/json'
             }, 
             body: JSON.stringify({
-            description: formData?.data?.description,
+            descr: formData?.data?.description,
             code: formData?.data?.code
           })
         })
@@ -105,9 +105,13 @@ function ProductEdit() {
          <input className="mt-3 form-control" type="text" id="description" name="description" onChange={handleInputChange} value={formData?.data?.description} />
          <input className="mt-3 form-control" type="text" id="code" name="code" onChange={handleInputChange} value={formData?.data?.code} />
          <label>Immagine:</label> 
-         <div>
+        
+         {product?.data?.multimedia && (
+           <div>
             <img src={`${BASE_URL}${formData?.data?.multimedia?.paths?.min}`} className="mt-5" alt="Product image" />
-         </div>
+           </div>
+         )}
+            
          <input type="file" className="mt-5" name="image" onChange={handleInputChange} />
          <br />
 
