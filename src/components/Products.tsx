@@ -28,17 +28,22 @@ function Products() {
   fetch("http://localhost:8080/api/products")
     .then(res => res.json())
     .then(data => setData(data));
-  };
+  }; 
+  
+  useEffect(() => { 
+    loadProducts();
+  },[])
+
   
   if (!token) {
     return <Navigate to="/" replace />;
   }
 
-  useEffect(() => {
-    fetch("http://localhost:8080/api/products")
-    .then((response) => response.json()) 
-    .then((json) => { setData(json);})
-  },[])
+  // useEffect(() => {
+  //   fetch("http://localhost:8080/api/products")
+  //   .then((response) => response.json()) 
+  //   .then((json) => { setData(json);})
+  // },[])
 
   interface Product {
     id: number;
@@ -60,9 +65,11 @@ function Products() {
       }) 
       .then((response) => {return response.json()})
       .then(result => { 
-            if (result.success) {
+            if (result.success) { 
               setMessage(result.message); 
               setSuccess(true); 
+              loadProducts();
+              console.log(result);
             }
          }) 
       .catch(error => {
@@ -174,7 +181,7 @@ function Products() {
                 data-bs-dismiss="modal" 
                  onClick={() => {
                 setSuccess(false);
-                loadProducts();
+                // loadProducts();
               }}
               >
                 Close
@@ -202,7 +209,7 @@ function Products() {
               aria-label="Close"
               onClick={() => {
                 setSuccess(false);
-                loadProducts();
+                // loadProducts();
               }}
             />
           </div>
@@ -215,7 +222,7 @@ function Products() {
               className="btn btn-secondary"
               onClick={() => {
                 setSuccess(false);
-                loadProducts();
+                // loadProducts();
               }}
             >
               Chiudi
