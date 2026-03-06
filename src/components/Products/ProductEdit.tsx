@@ -53,7 +53,7 @@ function ProductEdit() {
         .then((data) => {
             console.log(data)
         setProduct(data);
-        setFormData(data); // 👈 inizializza subito il form con i dati della tabella
+        setFormData(data); // inizializza il form con i dati della tabella
         })
         .catch((error) => {
         console.error("Errore nel fetch del prodotto:", error);
@@ -66,31 +66,13 @@ function ProductEdit() {
         const {name,value} = e.target; // Prende il nome e il valore dell’input
 
          setFormData({
-            ...formData, // copia tutto quello che già c’è nello stato. => ...formData copia tutto l’oggetto di stato attuale dentro al nuovo oggetto.
+            ...formData, // ...formData copia tutto l’oggetto di stato attuale dentro al nuovo oggetto.
             data: {
                 ...formData?.data,
                 [name]: name === "image" ? e.target.files[0] : value
-                // [name]:value
             }
          });
     })
-
-    // const submitForm = ((e:any) => {
-    //     e.preventDefault();
-    //     fetch(`http://localhost:8080/api/product-update/${numericId}`,{
-    //         method: 'PUT',
-    //         headers:{
-    //             'Content-Type':'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //         name: formData?.data?.name,
-    //         descr: formData?.data?.description,
-    //         code: formData?.data?.code
-    //       })
-    //     })
-    //     .then(response => { alert(); return response.json(); // <-- THIS WAS MISSING
-    //     });
-    // })
 
     const submitForm = (e:any) => {
         e.preventDefault();
@@ -101,8 +83,9 @@ function ProductEdit() {
         form.append('descr',formData?.data?.description ?? '');
         form.append('code',formData?.data?.code ?? '');
         form.append('image',formData?.data?.image ?? '');
+        form.append('_method', 'PUT');
 
-        fetch('http://localhost:8080/api/product-update', {
+        fetch('http://localhost:8080/api/product-update', { 
         method: 'POST',
         body:form
         })
@@ -110,11 +93,8 @@ function ProductEdit() {
         .then(result => {
              if (result.success) {
                console.log(formData)
-            //    setMessage(result.message);
-            //    setSuccess(true);
              }else{
                 console.log(result)
-                // setValidation(result);
              }
          })
         .catch(error => {
