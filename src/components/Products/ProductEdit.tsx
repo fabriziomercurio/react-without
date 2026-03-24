@@ -78,15 +78,17 @@ function ProductEdit() {
         e.preventDefault();
 
         const form = new FormData(); 
-        form.append('id', String(numericId ?? ''));
         form.append('name',formData?.data?.name ?? '');
         form.append('descr',formData?.data?.description ?? '');
         form.append('code',formData?.data?.code ?? '');
         form.append('image',formData?.data?.image ?? '');
         form.append('_method', 'PUT');
 
-        fetch('http://localhost:8080/api/product-update', { 
+        fetch(`http://localhost:8080/api/product-update/${id}`, { 
         method: 'POST',
+        headers: {
+        'X-HTTP-Method-Override': 'PUT'
+        },
         body:form
         })
         .then(response => {return response.json();} )
