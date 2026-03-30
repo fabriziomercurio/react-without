@@ -25,7 +25,7 @@ function Login()
    const navigate = useNavigate();
 
    const saveToken = (token:string) => {
-    localStorage.setItem('token', JSON.stringify(token))
+    localStorage.setItem('token', token)
    } 
 
    const saveCsrfToken = (csrfToken:string) => {

@@ -25,7 +25,12 @@ function Products() {
   }
 
   const loadProducts = () => {
-  fetch("http://localhost:8080/api/products")
+  fetch("http://localhost:8080/api/products", {
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("token"),
+      "Content-Type": "application/json"
+    }
+  })
     .then(res => res.json())
     .then(data => setData(data));
   }; 
@@ -38,12 +43,6 @@ function Products() {
   if (!token) {
     return <Navigate to="/" replace />;
   }
-
-  // useEffect(() => {
-  //   fetch("http://localhost:8080/api/products")
-  //   .then((response) => response.json()) 
-  //   .then((json) => { setData(json);})
-  // },[])
 
   interface Product {
     id: number;
